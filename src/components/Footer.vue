@@ -5,7 +5,7 @@
               <div class="container">
                   <div class="row wow zoomIn" data-wow-delay="0.4s">
                       <div class="col-md-12 text-center">
-                          <p>&copy;{{date}} <strong>Christian</strong>. All Rights Reserved</p>
+                          <p>&copy;{{date}} <a href="/"><strong>Christian</strong></a>. All Rights Reserved</p>
                       </div>
                   </div>
               </div>

@@ -38,7 +38,7 @@
                       </div>
 
                       <div class="alert alert-warning" v-if="showError">
-                        <strong>Warning!</strong> Indicates a warning that might need attention.
+                        <strong>Warning!</strong> The email could not be sent.
                       </div>
 
                           <div class="contact-form">
@@ -76,8 +76,10 @@
                                             </div>
                                         </div>
                                         <div class="col-md-12">
-                                            <input type="submit" @click.prevent="sendEmail" class="btn btn-effect btn-sent" value="Send message">
+                                            <input v-if="valid" type="submit" @click.prevent="sendEmail" class="btn btn-effect btn-sent" value="Send message">
+                                            <img v-if="showLoader" :src="'src/appAssets/images/loader.gif'" />
                                         </div>
+                                        <h4 class="text-danger text-center" v-if="!valid">Please complete all the fields</h4>
                                     </div>
                                 </div>
                             </form>
@@ -107,11 +109,25 @@ export default {
         message: ""
       },
       showMessageStatus: false,
-      showError: false
+      showError: false,
+      showLoader: false
     };
+  },
+  computed: {
+    valid() {
+      if (
+        this.contact.name.length > 3 &&
+        this.contact.email.length >= 10 &&
+        this.contact.subject.length > 3 &&
+        this.contact.message.length > 3
+      ) {
+        return true;
+      }
+    }
   },
   methods: {
     sendEmail() {
+      this.showLoader = true;
       let vm = this;
       emailjs
         .send("gmail", "chris_email", {
@@ -122,12 +138,7 @@ export default {
         })
         .then(
           function(response) {
-            // console.log(
-            //   "SUCCESS. status=%d, text=%s",
-            //   response.status,
-            //   response.text
-            // );
-
+            vm.showLoader = false;
             vm.showMessageStatus = true;
             setTimeout(function() {
               vm.showMessageStatus = false;
@@ -135,11 +146,11 @@ export default {
           },
           function(err) {
             vm.showError = true;
+            vm.showLoader = true;
             setTimeout(function() {
               vm.showError = false;
+              vm.showLoader = false;
             }, 5000);
-
-            //console.log("FAILED. error=", err);
           }
         );
     }
